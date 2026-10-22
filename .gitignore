@@ -1,0 +1,27 @@
+.idea/
+.gradle/
+*.iml
+.DS_Store
+local.properties
+/build/
+/app/build/
+/app/release/
+/app/debug/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.log
+*.tmp
+*.temp
+app/build.gradle.kts.bak
+app/google-services.json
+
+# Kotlin/Java build artifacts
+*.class
+*.kotlin_module
+META-INF/
+
+# Downloaded by the build (see .github/workflows/build.yml)
+app/src/main/assets/vosk-model/
