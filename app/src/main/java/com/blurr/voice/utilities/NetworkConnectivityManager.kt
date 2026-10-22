@@ -34,26 +34,20 @@ class NetworkConnectivityManager(private val context: Context) {
      * @return true if internet is available, false otherwise
      */
     suspend fun isNetworkAvailable(): Boolean = withContext(Dispatchers.IO) {
-        val sc = SpeechCoordinator.getInstance(context)
-
+        // Nova: only check that the phone has some network that claims internet access.
+        // The old version also pinged google.com and demanded the "validated" flag, which
+        // wrongly reported "offline" on some networks. If the internet really is down, the
+        // actual AI request fails and reports its own error.
         try {
-
-            // First check if network is connected
-            if (!isNetworkConnected()) {
-                sc.speakText("Network is not connected")
-                Log.d(TAG, "Network is not connected")
-                return@withContext false
-            }
-
-            // Then check if internet is actually accessible
-            return@withContext checkInternetConnectivity()
+            val network = connectivityManager.activeNetwork
+            val caps = connectivityManager.getNetworkCapabilities(network)
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         } catch (e: Exception) {
-            sc.speakText("Network is not connected")
-            Log.e(TAG, "Error checking network availability", e)
-            return@withContext false
+            Log.e(TAG, "Error checking network availability, assuming online", e)
+            true
         }
     }
-    
+
     /**
      * Check if network is connected (doesn't guarantee internet access)
      */
